@@ -1,23 +1,29 @@
 #include "pipes.h"
 
-IO* init_pipelines(int process_number){
-	IO* pipelines = (IO*) malloc ( sizeof(IO) * process_number);
-	for(int i = 0; i < process_number ; i++){
-		if ( i == 0) {
-			pipelines[i].input = (int*) malloc (sizeof(int) * process_number * 2);
-			for ( int j = 2; j < process_number * 2; j += 2)
-				pipe(pipelines[i].input + j);
-		} else {
-			pipelines[i].input = (int*) malloc (sizeof(int) * process_number * 2);
-			pipelines[i].output = (int*) malloc (sizeof(int) * process_number * 2);
-			for ( int j = 0; j < process_number * 2; j += 2){
-				if(j / 2 != i ){	
-                                	pipe(pipelines[i].input + j);
-					pipe(pipelines[i].output + j);
-				}
-			}
+IO init_pipelines(int proc_num){
+	IO context;
+	for (local_id i = 0; i <= proc_num; i++){
+		for (local_id j = 0; j <= proc_num; j++){
+			if ( i == j || j == 0)
+				continue;
+			if (pipe(context.pipelines[i][j]) != 0)
+				_exit(4);
 		}
 	}
-	return pipelines;
-
+	return context;
 }
+
+void print_pipes(IO context){
+	for (local_id i = 0; i <= context.proc_num; i++){
+		for (local_id j = 0; j <= context.proc_num; j++){
+			if ( i == j || j == 0){
+				printf("{0;0}");
+				continue;
+			}
+			printf("{%i;%i}",context.pipelines[i][j][0],context.pipelines[i][j][1]);
+				
+		}
+	printf("\n");
+	}
+}
+
