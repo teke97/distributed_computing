@@ -4,6 +4,7 @@
 #include "ipc.h"
 #include <string.h>
 #include <time.h>
+#include <fcntl.h>
 
 typedef struct {
 	int*** input;

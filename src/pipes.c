@@ -10,6 +10,8 @@ IO* init_pipelines(int process_number){
 			if ( i == j || j == 0)
 				continue;
 			pipe(*(*(pipelines -> input + i) + j) = (int*) malloc(sizeof(int) * 2));
+			fcntl(*(*(*(pipelines -> input + i) + j)), F_SETFL, O_NONBLOCK);
+			fcntl(*(*(*(pipelines -> input + i) + j)+1), F_SETFL, O_NONBLOCK);
 		}
 	}
 	return pipelines;
@@ -29,10 +31,10 @@ int receive(void * self, local_id from, Message * msg){
 	IO pl = *((IO*) self);
 	sprintf(buf, "Process  %i wanted message from %i\n", pl.local_id, from);
 	write(pl.pipes, buf, strlen(buf));
-	int count = read( *(*(*(pl.input + pl.local_id) + from) + 0), msg, sizeof(Message));
+	while (read( *(*(*(pl.input + pl.local_id) + from) + 0), msg, sizeof(Message)) <=0){}
 	sprintf(buf, "Process  %i recive message from %i: %s", pl.local_id, from, msg->s_payload);
 	write(pl.pipes, buf, strlen(buf));
-	return count;
+	return 0;
 }
 
 int send_multicast(void * self, const Message * msg){

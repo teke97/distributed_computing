@@ -1,12 +1,22 @@
-Process 0 (pid 15704, parent  4338) has STARTED
-Process 1 (pid 15705, parent 15704) has STARTED
-Process 2 (pid 15706, parent 15704) has STARTED
-Process 3 (pid 15707, parent 15704) has STARTED
-Process 0 received all STARTED messages
-Process 1 received all STARTED messages
-Process 3 received all STARTED messages
+Process 0 (pid 18218, parent  4338) has STARTED
+Process 5 (pid 18223, parent 18218) has STARTED
+Process 4 (pid 18222, parent 18218) has STARTED
+Process 6 (pid 18224, parent 18218) has STARTED
+Process 3 (pid 18221, parent 18218) has STARTED
+Process 2 (pid 18220, parent 18218) has STARTED
+Process 1 (pid 18219, parent 18218) has STARTED
+Process 7 (pid 18225, parent 18218) has STARTED
+Process 8 (pid 18226, parent 18218) has STARTED
+Process 9 (pid 18227, parent 18218) has STARTED
 Process 2 received all STARTED messages
-Process 3 has DONE its work
+Process 9 received all STARTED messages
+Process 8 received all STARTED messages
+Process 3 received all STARTED messages
+Process 4 received all STARTED messages
+Process 0 received all STARTED messages
+Process 7 received all STARTED messages
+Process 6 received all STARTED messages
+Process 5 received all STARTED messages
+Process 1 received all STARTED messages
 Process 2 has DONE its work
-Process 1 has DONE its work
-Process 0 has DONE its work
+Process 9 has DONE its work
