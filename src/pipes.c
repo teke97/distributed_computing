@@ -11,7 +11,7 @@ IO* init_pipelines(int process_number){
 				continue;
 			pipe(*(*(pipelines -> input + i) + j) = (int*) malloc(sizeof(int) * 2));
 			fcntl(*(*(*(pipelines -> input + i) + j)), F_SETFL, O_NONBLOCK);
-			fcntl(*(*(*(pipelines -> input + i) + j)+1), F_SETFL, O_NONBLOCK);
+			//fcntl(*(*(*(pipelines -> input + i) + j)+1), F_SETFL, O_NONBLOCK);
 		}
 	}
 	return pipelines;
@@ -21,6 +21,8 @@ int send(void * self, local_id dst, const Message * msg){
 	char buf[MAX_PAYLOAD_LEN];
 	IO pl = *((IO*) self);
 	int count =  write( *(*(*(pl.input + dst) + pl.local_id) + 1), msg, sizeof(MessageHeader) + msg -> s_header.s_payload_len);
+	if (count < 0)
+		printf("send from %i to %i failed", pl.local_id, dst);
 	sprintf( buf, "Process  %i send message to %i\n", pl.local_id, dst);
 	write(pl.pipes, buf, strlen(buf));
 	return count;

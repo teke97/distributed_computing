@@ -1,414 +1,43 @@
 Process  0 wanted message from 1
-Process  5 send message to 0
-Process  5 send message to 1
-Process  5 send message to 2
-Process  5 send message to 3
-Process  5 send message to 4
-Process  5 send message to 6
-Process  5 send message to 7
-Process  5 send message to 8
-Process  5 send message to 9
-Process  5 wanted message from 1
-Process  4 send message to 0
-Process  4 send message to 1
-Process  4 send message to 2
-Process  4 send message to 3
-Process  4 send message to 5
-Process  4 send message to 6
-Process  4 send message to 7
-Process  4 send message to 8
-Process  4 send message to 9
-Process  4 wanted message from 1
-Process  6 send message to 0
-Process  6 send message to 1
-Process  6 send message to 2
-Process  6 send message to 3
-Process  6 send message to 4
-Process  6 send message to 5
-Process  6 send message to 7
-Process  6 send message to 8
-Process  6 send message to 9
-Process  6 wanted message from 1
 Process  3 send message to 0
 Process  3 send message to 1
 Process  3 send message to 2
-Process  3 send message to 4
-Process  3 send message to 5
-Process  3 send message to 6
-Process  3 send message to 7
-Process  3 send message to 8
-Process  3 send message to 9
 Process  3 wanted message from 1
 Process  2 send message to 0
 Process  2 send message to 1
 Process  2 send message to 3
-Process  2 send message to 4
-Process  2 send message to 5
-Process  2 send message to 6
-Process  2 send message to 7
-Process  2 send message to 8
-Process  2 send message to 9
 Process  2 wanted message from 1
 Process  1 send message to 0
 Process  1 send message to 2
 Process  1 send message to 3
-Process  1 send message to 4
-Process  1 send message to 5
-Process  1 send message to 6
-Process  1 send message to 7
-Process  1 send message to 8
-Process  1 send message to 9
 Process  1 wanted message from 2
 Process  1 recive message from 2: Process started
 Process  1 wanted message from 3
 Process  1 recive message from 3: Process started
-Process  1 wanted message from 4
-Process  1 recive message from 4: Process started
-Process  1 wanted message from 5
-Process  1 recive message from 5: Process started
-Process  1 wanted message from 6
-Process  1 recive message from 6: Process started
-Process  1 wanted message from 7
-Process  7 send message to 0
-Process  7 send message to 1
-Process  1 recive message from 7: Process started
-Process  7 send message to 2
-Process  1 wanted message from 8
-Process  7 send message to 3
-Process  7 send message to 4
-Process  7 send message to 5
-Process  7 send message to 6
-Process  7 send message to 8
-Process  7 send message to 9
-Process  7 wanted message from 1
-Process  7 recive message from 1: Process started
-Process  7 wanted message from 2
-Process  7 recive message from 2: Process started
-Process  7 wanted message from 3
-Process  7 recive message from 3: Process started
-Process  7 wanted message from 4
-Process  7 recive message from 4: Process started
-Process  7 wanted message from 5
-Process  7 recive message from 5: Process started
-Process  7 wanted message from 6
-Process  7 recive message from 6: Process started
-Process  7 wanted message from 8
-Process  8 send message to 0
-Process  8 send message to 1
-Process  1 recive message from 8: Process started
-Process  8 send message to 2
-Process  1 wanted message from 9
-Process  8 send message to 3
-Process  8 send message to 4
-Process  8 send message to 5
-Process  8 send message to 6
-Process  8 send message to 7
-Process  8 send message to 9
-Process  8 wanted message from 1
-Process  8 recive message from 1: Process started
-Process  8 wanted message from 2
-Process  8 recive message from 2: Process started
-Process  8 wanted message from 3
-Process  8 recive message from 3: Process started
-Process  8 wanted message from 4
-Process  8 recive message from 4: Process started
-Process  8 wanted message from 5
-Process  8 recive message from 5: Process started
-Process  8 wanted message from 6
-Process  8 recive message from 6: Process started
-Process  8 wanted message from 7
-Process  8 recive message from 7: Process started
-Process  8 wanted message from 9
-Process  2 recive message from 1: Process started
-Process  2 wanted message from 3
-Process  2 recive message from 3: Process started
-Process  2 wanted message from 4
-Process  2 recive message from 4: Process started
-Process  2 wanted message from 5
-Process  2 recive message from 5: Process started
-Process  2 wanted message from 6
-Process  2 recive message from 6: Process started
-Process  2 wanted message from 7
-Process  2 recive message from 7: Process started
-Process  2 wanted message from 8
-Process  2 recive message from 8: Process started
-Process  2 wanted message from 9
-Process  9 send message to 0
-Process  9 send message to 1
-Process  9 send message to 2
-Process  2 recive message from 9: Process started
-Process  9 send message to 3
-Process  9 send message to 4
-Process  2 send message to 0
-Process  9 send message to 5
-Process  2 send message to 1
-Process  9 send message to 6
-Process  2 send message to 3
-Process  9 send message to 7
-Process  2 send message to 4
-Process  9 send message to 8
-Process  2 send message to 5
-Process  9 wanted message from 1
-Process  2 send message to 6
-Process  9 recive message from 1: Process started
-Process  2 send message to 7
-Process  9 wanted message from 2
-Process  2 send message to 8
-Process  2 send message to 9
-Process  9 recive message from 2: Process started
-Process  9 wanted message from 3
-Process  2 wanted message from 1
-Process  9 recive message from 3: Process started
-Process  9 wanted message from 4
-Process  9 recive message from 4: Process started
-Process  9 wanted message from 5
-Process  9 recive message from 5: Process started
-Process  9 wanted message from 6
-Process  9 recive message from 6: Process started
-Process  9 wanted message from 7
-Process  9 recive message from 7: Process started
-Process  9 wanted message from 8
-Process  9 recive message from 8: Process started
-Process  9 send message to 0
-Process  9 send message to 1
-Process  9 send message to 2
-Process  9 send message to 3
-Process  9 send message to 4
-Process  9 send message to 5
-Process  9 send message to 6
-Process  9 send message to 7
-Process  9 send message to 8
-Process  9 wanted message from 1
-Process  3 recive message from 1: Process started
-Process  3 wanted message from 2
-Process  3 recive message from 2: Process started
-¯¯Process  3 wanted message from 4
-Process  3 recive message from 4: Process started
-Process  3 wanted message from 5
-Process  3 recive message from 5: Process started
-Process  3 wanted message from 6
-Process  8 recive message from 9: Process started
-¯¯Process  3 recive message from 6: Process started
-Process  3 wanted message from 7
-Process  3 recive message from 7: Process started
-Process  3 wanted message from 8
-Process  3 recive message from 8: Process started
-Process  3 wanted message from 9
-Process  3 recive message from 9: Process started
-¯¯Process  8 send message to 0
-Process  3 send message to 0
-Process  8 send message to 1
-Process  3 send message to 1
-Process  8 send message to 2
-Process  3 send message to 2
-Process  8 send message to 3
-Process  3 send message to 4
-Process  8 send message to 4
-Process  3 send message to 5
-Process  8 send message to 5
-Process  3 send message to 6
-Process  8 send message to 6
-Process  3 send message to 7
-Process  8 send message to 7
-Process  3 send message to 8
-Process  8 send message to 9
-Process  3 send message to 9
-Process  8 wanted message from 1
-Process  3 wanted message from 1
-Process  4 recive message from 1: Process started
-Process  4 wanted message from 2
-Process  4 recive message from 2: Process started
-¯¯Process  4 wanted message from 3
-Process  4 recive message from 3: Process started
-¯¯Process  4 wanted message from 5
-Process  4 recive message from 5: Process started
-Process  4 wanted message from 6
-Process  4 recive message from 6: Process started
-Process  4 wanted message from 7
-Process  4 recive message from 7: Process started
-Process  4 wanted message from 8
-Process  4 recive message from 8: Process started
-¯¯Process  4 wanted message from 9
-Process  4 recive message from 9: Process started
-¯¯Process  4 send message to 0
-Process  4 send message to 1
-Process  4 send message to 2
-Process  4 send message to 3
-Process  4 send message to 5
-Process  4 send message to 6
-Process  4 send message to 7
-Process  4 send message to 8
-Process  4 send message to 9
-Process  4 wanted message from 1
-Process  0 recive message from 1: Process started
-Process  0 wanted message from 2
-Process  0 recive message from 2: Process started
-¯¯Process  0 wanted message from 3
-Process  0 recive message from 3: Process started
-¯¯Process  0 wanted message from 4
-Process  0 recive message from 4: Process started
-¯¯Process  0 wanted message from 5
-Process  0 recive message from 5: Process started
-Process  0 wanted message from 6
-Process  0 recive message from 6: Process started
-Process  0 wanted message from 7
-Process  0 recive message from 7: Process started
-Process  0 wanted message from 8
-Process  0 recive message from 8: Process started
-¯¯Process  0 wanted message from 9
-Process  0 recive message from 9: Process started
-¯¯Process  0 wanted message from 1
-Process  7 recive message from 8: Process started
-¯¯Process  7 wanted message from 9
-Process  7 recive message from 9: Process started
-¯¯Process  7 send message to 0
-Process  7 send message to 1
-Process  7 send message to 2
-Process  7 send message to 3
-Process  7 send message to 4
-Process  7 send message to 5
-Process  7 send message to 6
-Process  7 send message to 8
-Process  7 send message to 9
-Process  7 wanted message from 1
-Process  6 recive message from 1: Process started
-Process  6 wanted message from 2
-Process  6 recive message from 2: Process started
-¯¯Process  5 recive message from 1: Process started
-Process  6 wanted message from 3
-Process  5 wanted message from 2
-Process  6 recive message from 3: Process started
-¯¯Process  6 wanted message from 4
-Process  5 recive message from 2: Process started
-¯¯Process  6 recive message from 4: Process started
-¯¯Process  5 wanted message from 3
-Process  6 wanted message from 5
-Process  5 recive message from 3: Process started
-¯¯Process  5 wanted message from 4
-Process  6 recive message from 5: Process started
-Process  6 wanted message from 7
-Process  5 recive message from 4: Process started
-¯¯Process  5 wanted message from 6
-Process  6 recive message from 7: Process started
-¯¯Process  6 wanted message from 8
-Process  5 recive message from 6: Process started
-Process  5 wanted message from 7
-Process  6 recive message from 8: Process started
-¯¯Process  6 wanted message from 9
-Process  5 recive message from 7: Process started
-¯¯Process  5 wanted message from 8
-Process  6 recive message from 9: Process started
-¯¯Process  5 recive message from 8: Process started
-¯¯Process  5 wanted message from 9
-Process  5 recive message from 9: Process started
-¯¯Process  5 send message to 0
-Process  5 send message to 1
-Process  6 send message to 0
-Process  5 send message to 2
-Process  6 send message to 1
-Process  5 send message to 3
-Process  6 send message to 2
-Process  5 send message to 4
-Process  6 send message to 3
-Process  5 send message to 6
-Process  6 send message to 4
-Process  5 send message to 7
-Process  6 send message to 5
-Process  5 send message to 8
-Process  6 send message to 7
-Process  5 send message to 9
-Process  6 send message to 8
-Process  5 wanted message from 1
-Process  6 send message to 9
-Process  6 wanted message from 1
-Process  1 recive message from 9: Process started
-¯¯Process  1 send message to 0
+Process  1 send message to 0
 Process  1 send message to 2
 Process  1 send message to 3
-Process  1 send message to 4
-Process  4 recive message from 1: Process done
-Process  1 send message to 5
-Process  4 wanted message from 2
-Process  1 send message to 6
-Process  1 send message to 7
-Process  1 send message to 8
-Process  1 send message to 9
 Process  1 wanted message from 2
+Process  0 recive message from 1: Process started
+¯¯Process  0 wanted message from 2
+Process  0 recive message from 2: Process started
+Process  0 wanted message from 3
+Process  0 recive message from 3: Process started
+Process  0 wanted message from 1
+Process  3 recive message from 1: Process started
+¯¯Process  3 wanted message from 2
+Process  3 recive message from 2: Process started
+Process  3 send message to 0
+Process  3 send message to 1
+Process  3 send message to 2
+Process  3 wanted message from 1
+Process  2 recive message from 1: Process started
+¯¯Process  2 wanted message from 3
+Process  2 recive message from 3: Process started
+¯¯Process  2 send message to 0
+Process  2 send message to 1
+Process  2 send message to 3
+Process  2 wanted message from 1
 Process  1 recive message from 2: Process done
 Process  1 wanted message from 3
 Process  1 recive message from 3: Process done
-Process  1 wanted message from 4
-Process  1 recive message from 4: Process done
-Process  1 wanted message from 5
-Process  1 recive message from 5: Process done
-Process  1 wanted message from 6
-Process  1 recive message from 6: Process done
-Process  1 wanted message from 7
-Process  1 recive message from 7: Process done
-Process  1 wanted message from 8
-Process  1 recive message from 8: Process done
-Process  1 wanted message from 9
-Process  2 recive message from 1: Process done
-Process  2 wanted message from 3
-Process  3 recive message from 1: Process done
-Process  3 wanted message from 2
-Process  2 recive message from 3: Process done
-Process  2 wanted message from 4
-Process  2 recive message from 4: Process done
-Process  2 wanted message from 5
-Process  2 recive message from 5: Process done
-Process  2 wanted message from 6
-Process  2 recive message from 6: Process done
-Process  2 wanted message from 7
-Process  2 recive message from 7: Process done
-Process  2 wanted message from 8
-Process  2 recive message from 8: Process done
-Process  2 wanted message from 9
-Process  2 recive message from 9: Process done
-Process  5 recive message from 1: Process done
-Process  5 wanted message from 2
-Process  0 recive message from 1: Process done
-Process  0 wanted message from 2
-Process  6 recive message from 1: Process done
-Process  6 wanted message from 2
-Process  8 recive message from 1: Process done
-Process  8 wanted message from 2
-Process  8 recive message from 2: Process done
-Process  8 wanted message from 3
-Process  8 recive message from 3: Process done
-Process  8 wanted message from 4
-Process  8 recive message from 4: Process done
-Process  8 wanted message from 5
-Process  8 recive message from 5: Process done
-Process  8 wanted message from 6
-Process  8 recive message from 6: Process done
-Process  8 wanted message from 7
-Process  8 recive message from 7: Process done
-Process  8 wanted message from 9
-Process  9 recive message from 1: Process done
-Process  9 wanted message from 2
-Process  9 recive message from 2: Process done
-Process  9 wanted message from 3
-Process  9 recive message from 3: Process done
-Process  9 wanted message from 4
-Process  9 recive message from 4: Process done
-Process  9 wanted message from 5
-Process  9 recive message from 5: Process done
-Process  9 wanted message from 6
-Process  9 recive message from 6: Process done
-Process  9 wanted message from 7
-Process  9 recive message from 7: Process done
-Process  9 wanted message from 8
-Process  9 recive message from 8: Process done
-Process  7 recive message from 1: Process done
-Process  7 wanted message from 2
-Process  7 recive message from 2: Process done
-Process  7 wanted message from 3
-Process  7 recive message from 3: Process done
-Process  7 wanted message from 4
-Process  7 recive message from 4: Process done
-Process  7 wanted message from 5
-Process  7 recive message from 5: Process done
-Process  7 wanted message from 6
-Process  7 recive message from 6: Process done
-Process  7 wanted message from 8
