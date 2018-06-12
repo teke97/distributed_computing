@@ -1,0 +1,12 @@
+Process 0 (pid 15704, parent  4338) has STARTED
+Process 1 (pid 15705, parent 15704) has STARTED
+Process 2 (pid 15706, parent 15704) has STARTED
+Process 3 (pid 15707, parent 15704) has STARTED
+Process 0 received all STARTED messages
+Process 1 received all STARTED messages
+Process 3 received all STARTED messages
+Process 2 received all STARTED messages
+Process 3 has DONE its work
+Process 2 has DONE its work
+Process 1 has DONE its work
+Process 0 has DONE its work

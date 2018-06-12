@@ -1,0 +1,16 @@
+Process  1 send message to 0
+Process  1 send message to 2
+Process  1 recive message from 2: Process started
+Process  1 send message to 0
+Process  1 send message to 2
+Process  1 recive message from 2: Process done
+Process  2 send message to 0
+Process  2 send message to 1
+Process  2 recive message from 1: Process started
+Process  2 send message to 0
+Process  2 send message to 1
+Process  2 recive message from 1: Process done
+Process  0 recive message from 1: Process started
+Process  0 recive message from 2: Process started
+Process  0 recive message from 1: Process done
+Process  0 recive message from 2: Process done
