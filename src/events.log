@@ -1,8 +1,6 @@
-Process 1 (pid  4921, parent  4920) has STARTED
+Process 1 (pid 15175, parent 15174) has STARTED
 Process 1 has DONE its work
-Process 4 (pid  4924, parent  4920) has STARTED
-Process 4 has DONE its work
-Process 2 (pid  4922, parent  4920) has STARTED
+Process 2 (pid 15176, parent 15174) has STARTED
 Process 2 has DONE its work
-Process 3 (pid  4923, parent  4920) has STARTED
+Process 3 (pid 15177, parent 15174) has STARTED
 Process 3 has DONE its work

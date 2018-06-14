@@ -17,6 +17,35 @@ void usage(){
 	printf("Usage: lab1 -P X,\n\twhere X is a number of process (0<X<=10)\n");
 }
 
+int close_n_needed(IO context){
+	for (local_id i = 0 ; i <= context.proc_num; i++){
+		for (local_id j = 1 ; j <= context.proc_num; j++){
+			if ( i == j)
+				continue;
+			if ( i == context.id){
+				if (context.id == 0)
+					printf("%i\n", context.pipelines[i][j][1]);
+				close(context.pipelines[i][j][1]);
+			}
+			else {
+				if ( j != context.id){
+					if (context.id == 0){
+						printf("%i\n", context.pipelines[i][j][0]);
+						printf("%i\n", context.pipelines[i][j][1]);
+					}
+					close(context.pipelines[i][j][0]);
+					close(context.pipelines[i][j][1]);
+				}
+				else {
+					if (context.id == 0)
+					printf("%i\n", context.pipelines[i][j][0]);
+					close(context.pipelines[i][j][0]);
+				}
+			}
+		}
+	} 
+}
+
 int first_stage(IO context){
 	char buf[MAX_PAYLOAD_LEN];
 	int status;
@@ -39,7 +68,7 @@ int third_stage(IO context){
 
 int child_work(IO context){
 	int status;
-	
+	close_n_needed(context);
 	if (status = first_stage(context) < 0)
 		return status;
 
@@ -50,6 +79,7 @@ int child_work(IO context){
 
 
 int parent_work(IO context){
+		close_n_needed(context);
 	while ( wait(NULL) > 0);
 	return 0;
 }
