@@ -4,6 +4,9 @@
 #include "common.h"
 #include "ipc.h"  
 #include "pa1.h"
+#include <string.h>
+#include <time.h>
+#include <fcntl.h>
 
 
 
@@ -17,3 +20,4 @@ typedef struct {
 
 IO init_pipelines(int proc_num);
 void print_pipes(IO context);
+Message* build_msg(const char* payload, MessageType type);

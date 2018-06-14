@@ -23,22 +23,14 @@ int close_n_needed(IO context){
 			if ( i == j)
 				continue;
 			if ( i == context.id){
-				if (context.id == 0)
-					printf("%i\n", context.pipelines[i][j][1]);
 				close(context.pipelines[i][j][1]);
 			}
 			else {
 				if ( j != context.id){
-					if (context.id == 0){
-						printf("%i\n", context.pipelines[i][j][0]);
-						printf("%i\n", context.pipelines[i][j][1]);
-					}
 					close(context.pipelines[i][j][0]);
 					close(context.pipelines[i][j][1]);
 				}
 				else {
-					if (context.id == 0)
-					printf("%i\n", context.pipelines[i][j][0]);
 					close(context.pipelines[i][j][0]);
 				}
 			}
@@ -52,6 +44,11 @@ int first_stage(IO context){
 	sprintf(buf, log_started_fmt, context.id, getpid(), getppid());
 	if (status = write(context.events, buf, strlen(buf)) < 0){
 		return status;
+	}
+	
+	if (context.id == 1){
+		send(&context, 0, build_msg("xey xey\n", STARTED));
+		send(&context, 0, build_msg("", DONE));
 	}
 	return 0;
 }
@@ -79,7 +76,10 @@ int child_work(IO context){
 
 
 int parent_work(IO context){
-		close_n_needed(context);
+	close_n_needed(context);
+	Message* msg = (Message*) malloc(sizeof(Message)*2);
+	receive(&context, 1, msg);
+	receive(&context, 1, msg + 1);	
 	while ( wait(NULL) > 0);
 	return 0;
 }
