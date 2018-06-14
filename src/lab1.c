@@ -46,7 +46,7 @@ int first_stage(IO context){
 		return status;
 	}
 	
-	send_multicast(&context, build_msg("started", STARTED));
+	send_multicast(&context, build_msg("", STARTED));
 	
 	Message msg;
 
@@ -55,17 +55,20 @@ int first_stage(IO context){
 			continue;
 		receive(&context, i, &msg);
 	}
+	
+	sprintf(buf, log_received_all_started_fmt, context.id);
+	if (status = write(context.events, buf, strlen(buf)) < 0){
+		return status;
+	}
+	
 	return 0;
 }
 
 int third_stage(IO context){
 	char buf[MAX_PAYLOAD_LEN];
 	int status;
-	sprintf(buf, log_done_fmt, context.id);
-	if (status = write(context.events, buf, strlen(buf)) < 0){
-		return status;
-	}
-	send_multicast(&context, build_msg("done", DONE));
+
+	send_multicast(&context, build_msg("", DONE));
 	
 	Message msg;
 
@@ -73,6 +76,16 @@ int third_stage(IO context){
 		if (context.id == i)
 			continue;
 		receive(&context, i, &msg);
+	}
+	
+	sprintf(buf, log_received_all_done_fmt, context.id);
+	if (status = write(context.events, buf, strlen(buf)) < 0){
+		return status;
+	}
+
+	sprintf(buf, log_done_fmt, context.id);
+	if (status = write(context.events, buf, strlen(buf)) < 0){
+		return status;
 	}
 	return 0;
 }
@@ -135,7 +148,7 @@ int main(int argc, char *argv[]) {
 	
 	if (context.events < 0 || context.pipes < 0)
 		return 5;
-	print_pipes(context);
+//	print_pipes(context);
 	for (local_id i = 1; i <= process_number; i++){
 		pid = fork();
 		if (pid < 0) 

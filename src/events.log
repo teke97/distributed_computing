@@ -1,6 +1,40 @@
-Process 1 (pid  7213, parent  7212) has STARTED
-Process 3 (pid  7215, parent  7212) has STARTED
-Process 2 (pid  7214, parent  7212) has STARTED
+Process 1 (pid  8824, parent  8823) has STARTED
+Process 2 (pid  8825, parent  8823) has STARTED
+Process 3 (pid  8826, parent  8823) has STARTED
+Process 9 (pid  8832, parent  8823) has STARTED
+Process 8 (pid  8831, parent  8823) has STARTED
+Process 6 (pid  8829, parent  8823) has STARTED
+Process 7 (pid  8830, parent  8823) has STARTED
+Process 5 (pid  8828, parent  8823) has STARTED
+Process 10 (pid  8833, parent  8823) has STARTED
+Process 4 (pid  8827, parent  8823) has STARTED
+Process 4 received all STARTED messages
+Process 3 received all STARTED messages
+Process 9 received all STARTED messages
+Process 8 received all STARTED messages
+Process 7 received all STARTED messages
+Process 6 received all STARTED messages
+Process 5 received all STARTED messages
+Process 2 received all STARTED messages
+Process 1 received all STARTED messages
+Process 10 received all STARTED messages
+Process 2 received all DONE messages
 Process 2 has DONE its work
-Process 3 has DONE its work
+Process 1 received all DONE messages
 Process 1 has DONE its work
+Process 5 received all DONE messages
+Process 5 has DONE its work
+Process 10 received all DONE messages
+Process 10 has DONE its work
+Process 9 received all DONE messages
+Process 9 has DONE its work
+Process 3 received all DONE messages
+Process 3 has DONE its work
+Process 7 received all DONE messages
+Process 7 has DONE its work
+Process 8 received all DONE messages
+Process 8 has DONE its work
+Process 6 received all DONE messages
+Process 6 has DONE its work
+Process 4 received all DONE messages
+Process 4 has DONE its work

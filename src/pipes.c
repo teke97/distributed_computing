@@ -29,7 +29,12 @@ void print_pipes(IO context){
 int send(void * self, local_id dst, const Message * msg){
 	IO context = *((IO*) self);
 	int status;
+	char buf[MAX_PAYLOAD_LEN];
 	status = write(context.pipelines[dst][context.id][1], msg, sizeof(MessageHeader) + msg-> s_header.s_payload_len);
+	sprintf(buf, log_send, context.id, dst, msg->s_header.s_type);
+	if (status = write(context.pipes, buf, strlen(buf)) < 0){
+		return status;
+	}
 	return status;
 	
 }
@@ -37,12 +42,17 @@ int send(void * self, local_id dst, const Message * msg){
 int receive(void * self, local_id from, Message * msg){
 	IO context = *((IO*) self);
 	int status;
+	char buf[MAX_PAYLOAD_LEN];
 	MessageHeader msgh;
 	status = read(context.pipelines[context.id][from][0], &msgh, sizeof(MessageHeader));
 	msg->s_header = msgh;
 	if (msgh.s_payload_len != 0)
 		status = read(context.pipelines[context.id][from][0], msg->s_payload, msgh.s_payload_len);
-	printf("%s", msg->s_payload);
+	
+	sprintf(buf, log_rec, context.id, from, msg->s_header.s_type);
+	if (status = write(context.pipes, buf, strlen(buf)) < 0){
+		return status;
+	}
 	return status;
 }
 int receive_any(void * self, Message * msg){
