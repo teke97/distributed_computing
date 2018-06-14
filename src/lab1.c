@@ -46,9 +46,14 @@ int first_stage(IO context){
 		return status;
 	}
 	
-	if (context.id == 1){
-		send(&context, 0, build_msg("xey xey\n", STARTED));
-		send(&context, 0, build_msg("", DONE));
+	send_multicast(&context, build_msg("started", STARTED));
+	
+	Message msg;
+
+	for (local_id i = 1; i <= context.proc_num; i++){
+		if (context.id == i)
+			continue;
+		receive(&context, i, &msg);
 	}
 	return 0;
 }
@@ -59,6 +64,15 @@ int third_stage(IO context){
 	sprintf(buf, log_done_fmt, context.id);
 	if (status = write(context.events, buf, strlen(buf)) < 0){
 		return status;
+	}
+	send_multicast(&context, build_msg("done", DONE));
+	
+	Message msg;
+
+	for (local_id i = 1; i <= context.proc_num; i++){
+		if (context.id == i)
+			continue;
+		receive(&context, i, &msg);
 	}
 	return 0;
 }
@@ -77,9 +91,17 @@ int child_work(IO context){
 
 int parent_work(IO context){
 	close_n_needed(context);
-	Message* msg = (Message*) malloc(sizeof(Message)*2);
-	receive(&context, 1, msg);
-	receive(&context, 1, msg + 1);	
+	Message msg;
+	for (local_id i = 0; i <= context.proc_num; i++){
+		if (context.id == i)
+			continue;
+		receive(&context, i, &msg);
+	}
+	for (local_id i = 0; i <= context.proc_num; i++){
+		if (context.id == i)
+			continue;
+		receive(&context, i, &msg);
+	}
 	while ( wait(NULL) > 0);
 	return 0;
 }

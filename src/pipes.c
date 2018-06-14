@@ -42,7 +42,24 @@ int receive(void * self, local_id from, Message * msg){
 	msg->s_header = msgh;
 	if (msgh.s_payload_len != 0)
 		status = read(context.pipelines[context.id][from][0], msg->s_payload, msgh.s_payload_len);
-	printf("%s",msg->s_payload);
+	printf("%s", msg->s_payload);
+	return status;
+}
+int receive_any(void * self, Message * msg){
+	IO context = *((IO*) self);
+	int status;
+	while(1){
+		
+	}
+}
+int send_multicast(void * self, const Message * msg){
+	IO context = *((IO*) self);
+	int status;
+	for (local_id i = 0; i <= context.proc_num; i++){
+		if ( i == context.id)
+			continue;
+		status = send(self, i, msg);
+	}
 	return status;
 }
 

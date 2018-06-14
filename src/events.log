@@ -1,20 +1,6 @@
-Process 5 (pid  5528, parent  5523) has STARTED
-Process 5 has DONE its work
-Process 6 (pid  5529, parent  5523) has STARTED
-Process 6 has DONE its work
-Process 4 (pid  5527, parent  5523) has STARTED
-Process 4 has DONE its work
-Process 3 (pid  5526, parent  5523) has STARTED
-Process 3 has DONE its work
-Process 7 (pid  5530, parent  5523) has STARTED
-Process 7 has DONE its work
-Process 2 (pid  5525, parent  5523) has STARTED
+Process 1 (pid  7213, parent  7212) has STARTED
+Process 3 (pid  7215, parent  7212) has STARTED
+Process 2 (pid  7214, parent  7212) has STARTED
 Process 2 has DONE its work
-Process 8 (pid  5531, parent  5523) has STARTED
-Process 8 has DONE its work
-Process 1 (pid  5524, parent  5523) has STARTED
-Process 9 (pid  5532, parent  5523) has STARTED
-Process 9 has DONE its work
+Process 3 has DONE its work
 Process 1 has DONE its work
-Process 10 (pid  5533, parent  5523) has STARTED
-Process 10 has DONE its work
