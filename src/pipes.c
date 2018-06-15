@@ -4,7 +4,7 @@ IO init_pipelines(int proc_num){
 	IO context;
 	for (local_id i = 0; i <= proc_num; i++){
 		for (local_id j = 0; j <= proc_num; j++){
-			if ( i == j || j == 0)
+			if ( i == j )//|| j == 0)
 				continue;
 			if (pipe(context.pipelines[i][j]) != 0)
 				_exit(4);
@@ -32,7 +32,7 @@ int send(void * self, local_id dst, const Message * msg){
 	char buf[MAX_PAYLOAD_LEN];
 	status = write(context.pipelines[dst][context.id][1], msg, sizeof(MessageHeader) + msg-> s_header.s_payload_len);
 	sprintf(buf, log_send, context.id, dst, msg->s_header.s_type);
-	if (status = write(context.pipes, buf, strlen(buf)) < 0){
+	if ((status = write(context.pipes, buf, strlen(buf))) < 0){
 		return status;
 	}
 	return status;
@@ -50,7 +50,7 @@ int receive(void * self, local_id from, Message * msg){
 		status = read(context.pipelines[context.id][from][0], msg->s_payload, msgh.s_payload_len);
 	
 	sprintf(buf, log_rec, context.id, from, msg->s_header.s_type);
-	if (status = write(context.pipes, buf, strlen(buf)) < 0){
+	if ((status = write(context.pipes, buf, strlen(buf))) < 0){
 		return status;
 	}
 	return status;
@@ -59,8 +59,10 @@ int receive_any(void * self, Message * msg){
 	IO context = *((IO*) self);
 	int status;
 	while(1){
-		
+		status = context.id;
+		break;	
 	}
+	return 0;
 }
 int send_multicast(void * self, const Message * msg){
 	IO context = *((IO*) self);

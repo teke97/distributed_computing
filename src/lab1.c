@@ -14,12 +14,12 @@
 #include <sys/stat.h>
 
 void usage(){
-	printf("Usage: lab1 -P X,\n\twhere X is a number of process (0<X<=10)\n");
+	printf("Usage: lab1 -p X,\n\twhere X is a number of process (0<X<=10)\n");
 }
 
 int close_n_needed(IO context){
 	for (local_id i = 0 ; i <= context.proc_num; i++){
-		for (local_id j = 1 ; j <= context.proc_num; j++){
+		for (local_id j = 0 ; j <= context.proc_num; j++){
 			if ( i == j)
 				continue;
 			if ( i == context.id){
@@ -36,17 +36,18 @@ int close_n_needed(IO context){
 			}
 		}
 	} 
+	return 0;
 }
 
 int first_stage(IO context){
 	char buf[MAX_PAYLOAD_LEN];
 	int status;
 	sprintf(buf, log_started_fmt, context.id, getpid(), getppid());
-	if (status = write(context.events, buf, strlen(buf)) < 0){
+	if ((status = write(context.events, buf, strlen(buf))) < 0){
 		return status;
 	}
 	
-	send_multicast(&context, build_msg("", STARTED));
+	send_multicast(&context, build_msg(buf, STARTED));
 	
 	Message msg;
 
@@ -57,7 +58,7 @@ int first_stage(IO context){
 	}
 	
 	sprintf(buf, log_received_all_started_fmt, context.id);
-	if (status = write(context.events, buf, strlen(buf)) < 0){
+	if ((status = write(context.events, buf, strlen(buf))) < 0){
 		return status;
 	}
 	
@@ -68,7 +69,9 @@ int third_stage(IO context){
 	char buf[MAX_PAYLOAD_LEN];
 	int status;
 
-	send_multicast(&context, build_msg("", DONE));
+	sprintf(buf, log_done_fmt, context.id);
+
+	send_multicast(&context, build_msg(buf , DONE));
 	
 	Message msg;
 
@@ -79,12 +82,12 @@ int third_stage(IO context){
 	}
 	
 	sprintf(buf, log_received_all_done_fmt, context.id);
-	if (status = write(context.events, buf, strlen(buf)) < 0){
+	if ((status = write(context.events, buf, strlen(buf))) < 0){
 		return status;
 	}
 
 	sprintf(buf, log_done_fmt, context.id);
-	if (status = write(context.events, buf, strlen(buf)) < 0){
+	if ((status = write(context.events, buf, strlen(buf))) < 0){
 		return status;
 	}
 	return 0;
@@ -93,10 +96,10 @@ int third_stage(IO context){
 int child_work(IO context){
 	int status;
 	close_n_needed(context);
-	if (status = first_stage(context) < 0)
+	if ((status = first_stage(context)) < 0)
 		return status;
 
-	if (status = third_stage(context) < 0)
+	if ((status = third_stage(context)) < 0)
 		return status;
 	return 0;
 }
@@ -126,7 +129,7 @@ int main(int argc, char *argv[]) {
 		usage();
 		return 1;
 	}
-	if (strcmp("-P", argv[1]) != 0) {
+	if (strcmp("-p", argv[1]) != 0) {
 		usage();
 		return 2;
 	}
@@ -143,8 +146,8 @@ int main(int argc, char *argv[]) {
 
 	context.proc_num = process_number;
 
-	context.events = open(events_log, O_WRONLY | O_TRUNC);
-	context.pipes = open(pipes_log, O_WRONLY | O_TRUNC);
+	context.events = open(events_log, O_WRONLY | O_APPEND | O_CREAT);
+	context.pipes = open(pipes_log, O_WRONLY | O_APPEND | O_CREAT);
 	
 	if (context.events < 0 || context.pipes < 0)
 		return 5;
