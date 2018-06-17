@@ -30,7 +30,7 @@ int close_n_needed(IO context){
 					close(context.pipelines[i][j][0]);
 					close(context.pipelines[i][j][1]);
 				}
-				else {
+				else {	
 					close(context.pipelines[i][j][0]);
 				}
 			}
@@ -54,7 +54,7 @@ int first_stage(IO context){
 	for (local_id i = 1; i <= context.proc_num; i++){
 		if (context.id == i)
 			continue;
-		receive(&context, i, &msg);
+		receive_any(&context, &msg);
 	}
 	
 	sprintf(buf, log_received_all_started_fmt, context.id);
@@ -78,7 +78,7 @@ int third_stage(IO context){
 	for (local_id i = 1; i <= context.proc_num; i++){
 		if (context.id == i)
 			continue;
-		receive(&context, i, &msg);
+		receive_any(&context, &msg);
 	}
 	
 	sprintf(buf, log_received_all_done_fmt, context.id);
@@ -111,12 +111,12 @@ int parent_work(IO context){
 	for (local_id i = 0; i <= context.proc_num; i++){
 		if (context.id == i)
 			continue;
-		receive(&context, i, &msg);
+		receive_any(&context, &msg);
 	}
 	for (local_id i = 0; i <= context.proc_num; i++){
 		if (context.id == i)
 			continue;
-		receive(&context, i, &msg);
+		receive_any(&context, &msg);
 	}
 	while ( wait(NULL) > 0);
 	return 0;
@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
 	
 	if (context.events < 0 || context.pipes < 0)
 		return 5;
-//	print_pipes(context);
+	print_pipes(context);
 	for (local_id i = 1; i <= process_number; i++){
 		pid = fork();
 		if (pid < 0) 

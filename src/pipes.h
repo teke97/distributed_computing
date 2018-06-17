@@ -21,6 +21,7 @@ typedef struct {
 IO init_pipelines(int proc_num);
 void print_pipes(IO context);
 Message* build_msg(const char* payload, MessageType type);
+int receive_blk(void * self, local_id from, Message * msg);
 
 static const char * const log_send = 
 	"Process %i send message to %i with type: %i\n";

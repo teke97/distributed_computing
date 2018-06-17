@@ -8,6 +8,8 @@ IO init_pipelines(int proc_num){
 				continue;
 			if (pipe(context.pipelines[i][j]) != 0)
 				_exit(4);
+			fcntl(context.pipelines[i][j][0], F_SETFL, O_NONBLOCK);
+			fcntl(context.pipelines[i][j][1], F_SETFL, O_NONBLOCK);
 		}
 	}
 	return context;
@@ -16,7 +18,7 @@ IO init_pipelines(int proc_num){
 void print_pipes(IO context){
 	for (local_id i = 0; i <= context.proc_num; i++){
 		for (local_id j = 0; j <= context.proc_num; j++){
-			if ( i == j || j == 0){
+			if ( i == j ){
 				printf("{0;0}");
 				continue;
 			}
@@ -45,6 +47,8 @@ int receive(void * self, local_id from, Message * msg){
 	char buf[MAX_PAYLOAD_LEN];
 	MessageHeader msgh;
 	status = read(context.pipelines[context.id][from][0], &msgh, sizeof(MessageHeader));
+	if (status == -1)
+		return status;
 	msg->s_header = msgh;
 	if (msgh.s_payload_len != 0)
 		status = read(context.pipelines[context.id][from][0], msg->s_payload, msgh.s_payload_len);
@@ -53,16 +57,31 @@ int receive(void * self, local_id from, Message * msg){
 	if ((status = write(context.pipes, buf, strlen(buf))) < 0){
 		return status;
 	}
-	return status;
+	return 0;
+}
+int receive_blk(void * self, local_id from, Message * msg){
+	int status;
+	int n = 0;
+	while (1){
+		n++;
+		status = receive(self, from, msg);
+		if (status == 0)
+			return n;
+	}
 }
 int receive_any(void * self, Message * msg){
 	IO context = *((IO*) self);
 	int status;
+	int i;
 	while(1){
-		status = context.id;
-		break;	
+		for ( i = 0; i <= context.proc_num; i++) {
+			if ( i == context.id)
+				continue;
+			status = receive(self, i, msg);
+			if (status == 0)
+				return i;	
+		}
 	}
-	return 0;
 }
 int send_multicast(void * self, const Message * msg){
 	IO context = *((IO*) self);

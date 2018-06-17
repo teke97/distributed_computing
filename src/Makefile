@@ -1,4 +1,4 @@
-CC=clang-3.5
+CC=gcc
 
 CFLAFS=-std=c99 -Wall -pedantic
 BIN_DIR=../bin/
