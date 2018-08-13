@@ -146,8 +146,8 @@ int main(int argc, char *argv[]) {
 
 	context.proc_num = process_number;
 
-	context.events = open(events_log, O_WRONLY | O_APPEND | O_CREAT);
-	context.pipes = open(pipes_log, O_WRONLY | O_APPEND | O_CREAT);
+	context.events = open(events_log, O_WRONLY | O_APPEND | O_CREAT,0666);
+	context.pipes = open(pipes_log, O_WRONLY | O_APPEND | O_CREAT, 0666);
 	
 	if (context.events < 0 || context.pipes < 0)
 		return 5;

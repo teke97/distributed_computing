@@ -1,12 +1,8 @@
-Process 3 (pid  7524, parent  7521) has STARTED
-Process 2 (pid  7523, parent  7521) has STARTED
-Process 1 (pid  7522, parent  7521) has STARTED
-Process 1 received all STARTED messages
-Process 3 received all STARTED messages
+Process 2 (pid  8539, parent  8537) has STARTED
+Process 1 (pid  8538, parent  8537) has STARTED
 Process 2 received all STARTED messages
+Process 1 received all STARTED messages
 Process 2 received all DONE messages
 Process 2 has DONE its work
-Process 3 received all DONE messages
-Process 3 has DONE its work
 Process 1 received all DONE messages
 Process 1 has DONE its work
