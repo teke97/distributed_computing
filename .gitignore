@@ -1,3 +1,4 @@
-/src/*.swp
-/bin/*
-/src/strace/*
+*.swp
+*.log
+bin/**
+src/strace/**
