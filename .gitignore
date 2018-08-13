@@ -1,6 +1,4 @@
 *.swp
 *.log
 bin/**
-src/strace/**
-!bin
-!strace
+strace*
