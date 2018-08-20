@@ -8,8 +8,8 @@ IO init_pipelines(int proc_num){
 				continue;
 			if (pipe(context.pipelines[i][j]) != 0)
 				_exit(4);
-			fcntl(context.pipelines[i][j][0], F_SETFL, O_NONBLOCK);
-			fcntl(context.pipelines[i][j][1], F_SETFL, O_NONBLOCK);
+			fcntl(context.pipelines[i][j][0], F_SETFL, O_NONBLOCK); //| O_RDWR);
+			fcntl(context.pipelines[i][j][1], F_SETFL, O_NONBLOCK); //| O_RDWR);
 		}
 	}
 	return context;
@@ -58,6 +58,11 @@ int receive(void * self, local_id from, Message * msg){
 	if ((status = write(context.pipes, buf, strlen(buf))) < 0){
 		return status;
 	}
+	msg->s_payload[msgh.s_payload_len] = '\0';
+	
+	//if (context.id == 1)
+	//print_msg(*msg);
+	
 	return 0;
 }
 int receive_blk(void * self, local_id from, Message * msg){
@@ -100,10 +105,31 @@ Message* build_msg(const char* payload, MessageType type){
 	msgh.s_magic = MESSAGE_MAGIC;
 	msgh.s_payload_len = strlen(payload);
 	msgh.s_type = type;
-	msgh.s_local_time = time(NULL);
+	msgh.s_local_time = get_physical_time();
 	Message* msg = (Message*) malloc (sizeof(Message));
 	msg -> s_header = msgh;
 	if (msgh.s_payload_len != 0)
 		strcpy(msg -> s_payload, payload);
 	return msg;
+}
+	
+//Message* build_tranfer(TranferOrder tranfer_order , MessageType type){
+//	MessageHeader msgh;
+//	msgh.s_magic = MESSAGE_MAGIC;
+//	msgh.s_payload_len = strlen(payload);
+//	msgh.s_type = type;
+//	msgh.s_local_time = get_physical_time();
+//	Message* msg = (Message*) malloc (sizeof(Message));
+//	msg -> s_header = msgh;
+//	if (msgh.s_payload_len != 0)
+//		strcpy(msg -> s_payload, payload);
+//	return msg;
+//}
+
+void print_msg(Message msg){
+	if (msg.s_header.s_payload_len != 0)
+	printf("Magic: %hu\nPayload_len: %hu\nType: %hi\nTime: %hi\nMsg: %s\n",msg.s_header.s_magic, msg.s_header.s_payload_len, msg.s_header.s_type,msg.s_header.s_local_time ,msg.s_payload);
+	else
+	printf("Magic: %hu\nPayload_len: %hu\nType: %hi\nTime: %hi\nMsg: %s\n\n",msg.s_header.s_magic, msg.s_header.s_payload_len, msg.s_header.s_type,msg.s_header.s_local_time ,msg.s_payload);
+	return;
 }
