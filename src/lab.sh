@@ -4,5 +4,7 @@ make \
 && rm -f *.log \
 && rm -rf ./strace/* \
 && rm -rf ./strace/.strace* \
-&& LD_PRELOAD=/home/yaros/Yaros/Study/BCD/src/libruntime.so strace -o strace/strace -f -ff ../bin/pa23 -p 7 1 2 3 4 5 6 7  \
+&& echo 'start: '`date` \
+&& LD_PRELOAD=/home/yaros/Yaros/Study/BCD/src/libruntime.so strace -o strace/strace -f -ff ../bin/pa23 -p 3 10 20 30 \
+&& echo 'done: '`date` \
 && sed -i '/.*\(temporarily\|fstat\|nanosleep\).*/d' strace/strace*

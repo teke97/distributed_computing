@@ -113,18 +113,30 @@ Message* build_msg(const char* payload, MessageType type){
 	return msg;
 }
 	
-//Message* build_tranfer(TranferOrder tranfer_order , MessageType type){
-//	MessageHeader msgh;
-//	msgh.s_magic = MESSAGE_MAGIC;
-//	msgh.s_payload_len = strlen(payload);
-//	msgh.s_type = type;
-//	msgh.s_local_time = get_physical_time();
-//	Message* msg = (Message*) malloc (sizeof(Message));
-//	msg -> s_header = msgh;
-//	if (msgh.s_payload_len != 0)
-//		strcpy(msg -> s_payload, payload);
-//	return msg;
-//}
+Message* build_msg_h(BalanceHistory bh, MessageType type){
+	MessageHeader msgh;
+	msgh.s_magic = MESSAGE_MAGIC;
+	msgh.s_payload_len = sizeof(BalanceHistory) - sizeof(BalanceState)*(MAX_T - bh.s_history_len);
+	//printf("%lu   %lu\n",sizeof(uint8_t)*2 + (bh.s_history_len + 1)*sizeof(BalanceState),sizeof(BalanceHistory) - sizeof(BalanceState)*(MAX_T - bh.s_history_len));
+	msgh.s_type = type;
+	msgh.s_local_time = get_physical_time();
+	Message* msg = (Message*) malloc (sizeof(Message));
+	msg -> s_header = msgh;
+	memcpy(msg -> s_payload, &bh , msgh.s_payload_len);
+	return msg;
+}
+	
+Message* build_transfer(TransferOrder transfer_order){
+	MessageHeader msgh;
+	msgh.s_magic = MESSAGE_MAGIC;
+	msgh.s_payload_len = sizeof(TransferOrder);
+	msgh.s_type = TRANSFER;
+	msgh.s_local_time = get_physical_time();
+	Message* msg = (Message*) malloc (sizeof(Message));
+	msg -> s_header = msgh;
+	memcpy(msg -> s_payload, &transfer_order ,sizeof(TransferOrder));
+	return msg;
+}
 
 void print_msg(Message msg){
 	if (msg.s_header.s_payload_len != 0)
