@@ -18,7 +18,7 @@
 void transfer(void * parent_data, local_id src, local_id dst,
               balance_t amount)
 {
-	IO context = *((IO*)parent_data);
+	//IO context = *((IO*)parent_data);
 	TransferOrder transfer_order;
 	Message msg;	
 
@@ -210,7 +210,7 @@ int third_stage_child(IO* cxt){
 }
 
 int child_work(IO context){
-        Message msg;
+        //Message msg;
 	close_n_needed(context);
 	first_stage_child(&context);
 	second_stage_child(&context);
@@ -240,7 +240,7 @@ int first_stage_parent(IO context){
 }
 
 int second_stage_parent(IO context){
-	Message msg;
+	//Message msg;
 	
 	bank_robbery(&context, context.proc_num);
 	transfer(&context, 2, 1, 5);
@@ -249,6 +249,7 @@ int second_stage_parent(IO context){
 	return 0;
 
 }
+//////////////////////////////////
 void fix_max_h_len(AllHistory* ah){
 	uint8_t max = 0;
 	for (size_t i = 1; i <= ah -> s_history_len; i++){
@@ -257,15 +258,28 @@ void fix_max_h_len(AllHistory* ah){
 		}
 	}
 	max++;
-	for (size_t i = 1; i <= ah -> s_history_len; i++)
+	for (size_t i = 1; i <= ah -> s_history_len; i++){
 		ah -> s_history[i].s_history_len = max;
+		//print_balance_h(ah -> s_history[i]);
+	}
 
 }
-AllHistory* fix_all_h(AllHistory* ah){
+void fix_balance(AllHistory* ah){
 	for (size_t i = 1; i <= ah -> s_history_len; i++){
-		ah -> s_history[i].s_history[ah -> s_history[i].s_history_len + 1].s_time = 0;
-		print_balance_h(ah -> s_history[i]);
+		fix_h(&ah -> s_history[i]);
+		//print_balance_h(ah -> s_history[i]);
 	}
+}
+void fix_pending(AllHistory* ah){
+	for (size_t i = 1; i <= ah -> s_history_len; i++){
+        	for (size_t j = 0; j <= ah -> s_history[i].s_history_len ; j++){
+        		ah -> s_history[i].s_history[j].s_balance_pending_in = 0;
+        	}
+	
+	print_balance_h(ah -> s_history[i]);
+        }
+}
+AllHistory* fix_all_h(AllHistory* ah){
 	fix_max_h_len(ah);
 	for (size_t i = 1; i <= ah -> s_history_len; i++){
 		fix_h(&(ah -> s_history[i]));
@@ -279,7 +293,7 @@ AllHistory* fix_all_h(AllHistory* ah){
         }
 	return ah;
 }
-
+//////////////////////////////////
 int third_stage_parent(IO context){
 	char buf[MAX_PAYLOAD_LEN];
 	int status;
@@ -305,15 +319,18 @@ int third_stage_parent(IO context){
 		size_t from;
 		receive_blk(&context,i,&msg);
 		ah.s_history[i] = *(BalanceHistory*) msg.s_payload;
-		print_balance_h(*(BalanceHistory*) msg.s_payload);
+		ah.s_history[i].s_history[ah.s_history[i].s_history_len + 1].s_time = 0;
+		//print_balance_h(ah.s_history[i]);
 	}
-	print_history(fix_all_h(&ah));
-//	print_history(&ah);
+	fix_max_h_len(&ah);
+	fix_balance(&ah);
+	fix_pending(&ah);
+	//print_history(fix_all_h(&ah));
+	print_history(&ah);
 	return 0;
 }
 
 int parent_work(IO context){
-	char buf[MAX_PAYLOAD_LEN];
 	close_n_needed(context);
 
 	first_stage_parent(context);
