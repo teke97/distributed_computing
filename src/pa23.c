@@ -240,10 +240,8 @@ int first_stage_parent(IO context){
 }
 
 int second_stage_parent(IO context){
-	//Message msg;
 	
 	bank_robbery(&context, context.proc_num);
-	transfer(&context, 2, 1, 5);
 	send_multicast(&context, build_msg("" , STOP));
 
 	return 0;
@@ -252,46 +250,37 @@ int second_stage_parent(IO context){
 //////////////////////////////////
 void fix_max_h_len(AllHistory* ah){
 	uint8_t max = 0;
-	for (size_t i = 1; i <= ah -> s_history_len; i++){
+	for (size_t i = 0; i < ah -> s_history_len; i++){
 		if (ah -> s_history[i].s_history_len > max){
 			max = ah -> s_history[i].s_history_len;
 		}
 	}
 	max++;
-	for (size_t i = 1; i <= ah -> s_history_len; i++){
+	//printf("\n\n<FIX MAX H LEN>\n\n");
+	for (size_t i = 0; i < ah -> s_history_len; i++){
 		ah -> s_history[i].s_history_len = max;
-		//print_balance_h(ah -> s_history[i]);
+	//	print_balance_h(ah->s_history[i]);
 	}
+	//printf("\n\n</FIX MAX H LEN>\n\n");
 
 }
 void fix_balance(AllHistory* ah){
-	for (size_t i = 1; i <= ah -> s_history_len; i++){
+	//printf("\n\n<FIX BALANCE>\n\n");
+	for (size_t i = 0; i < ah -> s_history_len; i++){
 		fix_h(&ah -> s_history[i]);
-		//print_balance_h(ah -> s_history[i]);
+	//	print_balance_h(ah->s_history[i]);
 	}
+	//printf("\n\n</FIX BALANCE>\n\n");
 }
 void fix_pending(AllHistory* ah){
-	for (size_t i = 1; i <= ah -> s_history_len; i++){
+	//printf("\n\n<FIX PENDING>\n\n");
+	for (size_t i = 0; i < ah -> s_history_len; i++){
         	for (size_t j = 0; j <= ah -> s_history[i].s_history_len ; j++){
         		ah -> s_history[i].s_history[j].s_balance_pending_in = 0;
         	}
-	
-	print_balance_h(ah -> s_history[i]);
+	//	print_balance_h(ah->s_history[i]);
         }
-}
-AllHistory* fix_all_h(AllHistory* ah){
-	fix_max_h_len(ah);
-	for (size_t i = 1; i <= ah -> s_history_len; i++){
-		fix_h(&(ah -> s_history[i]));
-        }
-        for (size_t i = 1; i <= ah -> s_history_len; i++){
-        	for (size_t j = 0; j < ah -> s_history[i].s_history_len ; i++){
-        		ah -> s_history[i].s_history[j].s_balance_pending_in = 0;
-        	}
-	
-	print_balance_h(ah -> s_history[i]);
-        }
-	return ah;
+	//printf("\n\n</FIX PENDING>\n\n");
 }
 //////////////////////////////////
 int third_stage_parent(IO context){
@@ -314,18 +303,16 @@ int third_stage_parent(IO context){
 		return status;
 	}
 	for (local_id i = 1; i <= context.proc_num; i++){
+		memset(&msg, 0, sizeof(Message));
 		if (context.id == i)
 			continue;
-		size_t from;
 		receive_blk(&context,i,&msg);
-		ah.s_history[i] = *(BalanceHistory*) msg.s_payload;
-		ah.s_history[i].s_history[ah.s_history[i].s_history_len + 1].s_time = 0;
-		//print_balance_h(ah.s_history[i]);
+		ah.s_history[i-1] = *(BalanceHistory*) msg.s_payload;
+	//	print_balance_h(ah.s_history[i-1]);
 	}
 	fix_max_h_len(&ah);
 	fix_balance(&ah);
 	fix_pending(&ah);
-	//print_history(fix_all_h(&ah));
 	print_history(&ah);
 	return 0;
 }
