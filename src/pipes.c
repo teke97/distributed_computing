@@ -32,13 +32,13 @@ int send(void * self, local_id dst, const Message * msg){
 	IO context = *((IO*) self);
 	int status;
 	char buf[MAX_PAYLOAD_LEN];
+
 	status = write(context.pipelines[dst][context.id][1], msg, sizeof(MessageHeader) + msg-> s_header.s_payload_len);
 	sprintf(buf, log_send, context.id, dst, msg->s_header.s_type);
 	if ((status = write(context.pipes, buf, strlen(buf))) < 0){
 		return status;
 	}
 	return status;
-	
 }
 
 int receive(void * self, local_id from, Message * msg){
@@ -52,8 +52,12 @@ int receive(void * self, local_id from, Message * msg){
 	msg->s_header = msgh;
 	if (msgh.s_payload_len > 0)
 		status = read(context.pipelines[context.id][from][0], msg->s_payload, msgh.s_payload_len);
-	
-	
+	timestamp_t time = get_lamport_time(self);
+	((IO*) self) -> time = time > msg -> s_header.s_local_time + 1 ? time : msg -> s_header.s_local_time + 1;
+
+////////if (context.id == 1)
+////////	printf("%d\n", ((IO*) self) -> time);
+
 	sprintf(buf, log_rec, context.id, from, msg->s_header.s_type);
 	if ((status = write(context.pipes, buf, strlen(buf))) < 0){
 		return status;
@@ -100,12 +104,12 @@ int send_multicast(void * self, const Message * msg){
 	return status;
 }
 
-Message* build_msg(const char* payload, MessageType type){
+Message* build_msg(IO* cxt ,const char* payload, MessageType type){
 	MessageHeader msgh;
 	msgh.s_magic = MESSAGE_MAGIC;
 	msgh.s_payload_len = strlen(payload);
 	msgh.s_type = type;
-	msgh.s_local_time = get_physical_time();
+	msgh.s_local_time = get_lamport_time(cxt);
 	Message* msg = (Message*) malloc (sizeof(Message));
 	msg -> s_header = msgh;
 	if (msgh.s_payload_len != 0)
@@ -113,25 +117,26 @@ Message* build_msg(const char* payload, MessageType type){
 	return msg;
 }
 	
-Message* build_msg_h(BalanceHistory bh, MessageType type){
+Message* build_msg_h(IO* cxt, MessageType type){
+	BalanceHistory bh = cxt -> balance_history;
 	MessageHeader msgh;
 	msgh.s_magic = MESSAGE_MAGIC;
 	msgh.s_payload_len = sizeof(BalanceHistory) - sizeof(BalanceState)*(MAX_T - bh.s_history_len);
 	//printf("%lu   %lu\n",sizeof(uint8_t)*2 + (bh.s_history_len + 1)*sizeof(BalanceState),sizeof(BalanceHistory) - sizeof(BalanceState)*(MAX_T - bh.s_history_len));
 	msgh.s_type = type;
-	msgh.s_local_time = get_physical_time();
+	msgh.s_local_time = get_lamport_time(cxt);
 	Message* msg = (Message*) malloc (sizeof(Message));
 	msg -> s_header = msgh;
 	memcpy(msg -> s_payload, &bh , msgh.s_payload_len);
 	return msg;
 }
 	
-Message* build_transfer(TransferOrder transfer_order){
+Message* build_transfer(IO* cxt, TransferOrder transfer_order){
 	MessageHeader msgh;
 	msgh.s_magic = MESSAGE_MAGIC;
 	msgh.s_payload_len = sizeof(TransferOrder);
 	msgh.s_type = TRANSFER;
-	msgh.s_local_time = get_physical_time();
+	msgh.s_local_time = get_lamport_time(cxt);
 	Message* msg = (Message*) malloc (sizeof(Message));
 	msg -> s_header = msgh;
 	memcpy(msg -> s_payload, &transfer_order ,sizeof(TransferOrder));
@@ -145,3 +150,10 @@ void print_msg(Message msg){
 	printf("Magic: %hu\nPayload_len: %hu\nType: %hi\nTime: %hi\nMsg: %s\n\n",msg.s_header.s_magic, msg.s_header.s_payload_len, msg.s_header.s_type,msg.s_header.s_local_time ,msg.s_payload);
 	return;
 }
+
+
+timestamp_t get_lamport_time(IO* cxt){
+	cxt -> time++;
+	return cxt -> time;
+}
+

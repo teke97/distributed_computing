@@ -20,16 +20,18 @@ typedef struct {
 	int pipes;
 	local_id id;
 	BalanceHistory balance_history;
+	timestamp_t time;
+        int multicast;
 } IO;
 
 IO init_pipelines(int proc_num);
 void print_pipes(IO context);
-Message* build_msg(const char* payload, MessageType type);
-Message* build_msg_h(BalanceHistory bh, MessageType type);
+Message* build_msg(IO* cxt, const char* payload, MessageType type);
+Message* build_msg_h(IO* cxt, MessageType type);
 int receive_blk(void * self, local_id from, Message * msg);
 void print_msg(Message msg);
 void print_balance_h(BalanceHistory bh);
-Message* build_transfer(TransferOrder transfer_order);
+Message* build_transfer(IO* cxt, TransferOrder transfer_order);
 
 static const char * const log_send = 
 	"Process %i send message to %i with type: %i\n";

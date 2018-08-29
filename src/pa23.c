@@ -21,11 +21,13 @@ void transfer(void * parent_data, local_id src, local_id dst,
 	//IO context = *((IO*)parent_data);
 	TransferOrder transfer_order;
 	Message msg;	
+	
+	memset(&transfer_order, 0, sizeof(TransferOrder));
 
 	transfer_order.s_src = src;
 	transfer_order.s_dst = dst;
 	transfer_order.s_amount = amount;
-	send(parent_data, src, build_transfer(transfer_order));
+	send(parent_data, src, build_transfer(parent_data,transfer_order));
 	receive_blk(parent_data, dst, &msg);
 //	printf("Transaction from %hhu to %hhu with %hu$$$ is completed.\nType:%hu\n", src, dst, amount,msg.s_header.s_type);
 }
@@ -89,25 +91,36 @@ void transfer_out(IO* cxt, Message msg){
 	TransferOrder to = *((TransferOrder*) msg.s_payload);
 	sprintf(buf, log_transfer_out_fmt, get_physical_time(), to.s_src, to.s_amount, to.s_dst);
 	cxt -> balance -= to.s_amount;
-	timestamp_t time = get_physical_time();
+	timestamp_t time = get_lamport_time(cxt);
 	cxt -> balance_history.s_history_len = time;
 	cxt -> balance_history.s_history[time].s_time = time;
 	cxt -> balance_history.s_history[time].s_balance = cxt -> balance;
+	cxt -> balance_history.s_history[time].s_balance_pending_in = to.s_amount;
+	msg.s_header.s_local_time = time;	
+	
+	
+
 	send(cxt, to.s_dst, &msg );
 	write(cxt -> events, buf, strlen(buf));
+}
+timestamp_t max_t(timestamp_t first, timestamp_t second){
+//	printf("%d %d %d\n",first, second, first > second ? first : second );
+	return first > second ? first : second;
 }
 
 void transfer_in(IO* cxt, Message msg){
 	char buf[MAX_PAYLOAD_LEN];
-			TransferOrder to = *((TransferOrder*) msg.s_payload);
-			sprintf(buf, log_transfer_in_fmt, get_physical_time(), to.s_dst, to.s_amount, to.s_src);
-                        cxt -> balance += to.s_amount;
-			timestamp_t time = get_physical_time();
-			cxt -> balance_history.s_history_len = time;
-			cxt -> balance_history.s_history[time].s_time = time;
-			cxt -> balance_history.s_history[time].s_balance = cxt -> balance;
-			send(cxt, 0, build_msg("", ACK));
-			write(cxt -> events, buf, strlen(buf));
+	TransferOrder to = *((TransferOrder*) msg.s_payload);
+	sprintf(buf, log_transfer_in_fmt, get_physical_time(), to.s_dst, to.s_amount, to.s_src);
+        cxt -> balance += to.s_amount;
+	timestamp_t time = max_t(++msg.s_header.s_local_time, get_lamport_time(cxt));
+	cxt -> balance_history.s_history_len = time;
+	cxt -> balance_history.s_history[time].s_time = time;
+	cxt -> balance_history.s_history[time].s_balance = cxt -> balance;
+	cxt -> time = time;
+	msg.s_header.s_local_time = cxt -> time;
+	send(cxt, 0, build_msg(cxt,"", ACK));
+	write(cxt -> events, buf, strlen(buf));
 }
 
 int first_stage_child(IO* cxt){
@@ -122,7 +135,7 @@ int first_stage_child(IO* cxt){
 		return status;
 	}
 	// Send started msg other process
-	send_multicast(&context, build_msg(buf, STARTED));
+	send_multicast(&context, build_msg(cxt,buf, STARTED));
 	
 	// Receive started msg from other process
 	for (local_id i = 1; i <= context.proc_num; i++){
@@ -180,7 +193,7 @@ int third_stage_child(IO* cxt){
 	// Build msg
 	sprintf(buf ,log_done_fmt, get_physical_time(), context.id, context.balance);
 	// Send stop done other process
-	send_multicast(cxt, build_msg(buf , DONE));
+	send_multicast(cxt, build_msg(cxt,buf , DONE));
 	// Receive done msg from other process
 	for (local_id i = 1; i <= context.proc_num; i++){
 		if (context.id == i)
@@ -205,7 +218,7 @@ int third_stage_child(IO* cxt){
 	if ((status = write(context.events, buf, strlen(buf))) < 0){
 		return status;
 	}
-	send(cxt, 0 , build_msg_h(cxt -> balance_history, BALANCE_HISTORY));
+	send(cxt, 0 , build_msg_h(cxt, BALANCE_HISTORY));
 	return 0;
 }
 
@@ -242,7 +255,7 @@ int first_stage_parent(IO context){
 int second_stage_parent(IO context){
 	
 	bank_robbery(&context, context.proc_num);
-	send_multicast(&context, build_msg("" , STOP));
+	send_multicast(&context, build_msg(&context ,"" , STOP));
 
 	return 0;
 
@@ -312,7 +325,7 @@ int third_stage_parent(IO context){
 	}
 	fix_max_h_len(&ah);
 	fix_balance(&ah);
-	fix_pending(&ah);
+//	fix_pending(&ah);
 	print_history(&ah);
 	return 0;
 }
@@ -373,10 +386,15 @@ int main(int argc, char *argv[]) {
 		if( pid == 0) {
 			BalanceState bs;
 			bs.s_balance = atoi(argv[i + 2]);
+			bs.s_time = 0;
+			bs.s_balance_pending_in = 0;
 			context.id = i;
+			memset(&context.balance_history, 0, sizeof(BalanceHistory));
 			context.balance = atoi(argv[i + 2]);
 			context.balance_history.s_id = i;
 			context.balance_history.s_history[0] = bs;
+			context.time = 0;
+			context.multicast = 1;
 			return child_work(context);
 		}
 		pid = 0;
