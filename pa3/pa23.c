@@ -89,6 +89,7 @@ void fix_h(BalanceHistory* bh){
 void transfer_out(IO* cxt, Message msg){
 	char buf[MAX_PAYLOAD_LEN];
 	TransferOrder to = *((TransferOrder*) msg.s_payload);
+	sprintf(buf, log_transfer_out_fmt, cxt -> time, to.s_src, to.s_amount, to.s_dst);
 	cxt -> balance -= to.s_amount;
 	timestamp_t time = get_lamport_time(cxt);
 	cxt -> balance_history.s_history_len = time;
@@ -98,7 +99,6 @@ void transfer_out(IO* cxt, Message msg){
 	msg.s_header.s_local_time = time;	
 	
 	
-	sprintf(buf, log_transfer_out_fmt, cxt -> time, to.s_src, to.s_amount, to.s_dst);
 
 	send(cxt, to.s_dst, &msg );
 	write(cxt -> events, buf, strlen(buf));
@@ -111,6 +111,7 @@ timestamp_t max_t(timestamp_t first, timestamp_t second){
 void transfer_in(IO* cxt, Message msg){
 	char buf[MAX_PAYLOAD_LEN];
 	TransferOrder to = *((TransferOrder*) msg.s_payload);
+	sprintf(buf, log_transfer_in_fmt, cxt -> time, to.s_dst, to.s_amount, to.s_src);
         cxt -> balance += to.s_amount;
 	//timestamp_t time = max_t(++msg.s_header.s_local_time, get_lamport_time(cxt));
 	timestamp_t time = max_t(msg.s_header.s_local_time, cxt->time);
@@ -120,7 +121,6 @@ void transfer_in(IO* cxt, Message msg){
 	cxt -> time = time;
 	msg.s_header.s_local_time = cxt -> time;
 	send(cxt, 0, build_msg(cxt,"", ACK));
-	sprintf(buf, log_transfer_in_fmt, cxt -> time, to.s_dst, to.s_amount, to.s_src);
 	write(cxt -> events, buf, strlen(buf));
 }
 
