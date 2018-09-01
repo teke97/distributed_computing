@@ -61,8 +61,8 @@ int close_n_needed(IO context){
 
 //void set_history(IO* cxt,timestamp_t time, balance_t old_balance , balance_t new_balance){
 //	for (timestamp_t i = 0; i < time; i++){
-//		if (ctx -> balance_history.[i].s_time < time){
-//			ctx -> balance_history.[i].
+//		if (cxt -> balance_history.[i].s_time < time){
+//			cxt -> balance_history.[i].
 //		}
 //	}
 //}
@@ -84,29 +84,31 @@ void fix_h(BalanceHistory* bh){
 		}
         }
 }
-
+timestamp_t max_t(timestamp_t first, timestamp_t second){
+//	printf("%d %d %d\n",first, second, first > second ? first : second );
+	return first > second ? first : second;
+}
 
 void transfer_out(IO* cxt, Message msg){
 	char buf[MAX_PAYLOAD_LEN];
 	TransferOrder to = *((TransferOrder*) msg.s_payload);
 	cxt -> balance -= to.s_amount;
-	timestamp_t time = get_lamport_time(cxt);
+	timestamp_t time = max_t(msg.s_header.s_local_time, cxt->time);
+	time = get_lamport_time(cxt);
 	cxt -> balance_history.s_history_len = time;
 	cxt -> balance_history.s_history[time].s_time = time;
 	cxt -> balance_history.s_history[time].s_balance = cxt -> balance;
 	cxt -> balance_history.s_history[time].s_balance_pending_in = to.s_amount;
+
+	
 	msg.s_header.s_local_time = time;	
-	
-	
+	//cxt -> balance_history.s_history[time].s_balance_pending_in = to.s_amount;
 	sprintf(buf, log_transfer_out_fmt, cxt -> time, to.s_src, to.s_amount, to.s_dst);
 
 	send(cxt, to.s_dst, &msg );
 	write(cxt -> events, buf, strlen(buf));
 }
-timestamp_t max_t(timestamp_t first, timestamp_t second){
-//	printf("%d %d %d\n",first, second, first > second ? first : second );
-	return first > second ? first : second;
-}
+
 
 void transfer_in(IO* cxt, Message msg){
 	char buf[MAX_PAYLOAD_LEN];
@@ -232,30 +234,30 @@ int child_work(IO context){
 	return 0;
 }
 
-int first_stage_parent(IO context){
+int first_stage_parent(IO* cxt){
 	char buf[MAX_PAYLOAD_LEN];
 	int status;
 	Message msg;
 
 	// Receive started msg from other process
-	for (local_id i = 1; i <= context.proc_num; i++){
-		if (context.id == i)
+	for (local_id i = 1; i <= cxt->proc_num; i++){
+		if (cxt->id == i)
 			continue;
-		receive_any(&context, &msg);
+		receive_any(cxt, &msg);
 	}
 	// Log recived started msg from other process
-	sprintf(buf, log_received_all_started_fmt,context.time, context.id);
-	if ((status = write(context.events, buf, strlen(buf))) < 0){
+	sprintf(buf, log_received_all_started_fmt,cxt->time, cxt->id);
+	if ((status = write(cxt->events, buf, strlen(buf))) < 0){
 		return status;
 	}
 	
 	return 0;
 }
 
-int second_stage_parent(IO context){
+int second_stage_parent(IO* cxt){
 	
-	bank_robbery(&context, context.proc_num);
-	send_multicast(&context, build_msg(&context ,"" , STOP));
+	bank_robbery(cxt, cxt->proc_num);
+	send_multicast(cxt, build_msg(cxt ,"" , STOP));
 
 	return 0;
 
@@ -296,30 +298,30 @@ void fix_pending(AllHistory* ah){
 	//printf("\n\n</FIX PENDING>\n\n");
 }
 //////////////////////////////////
-int third_stage_parent(IO context){
+int third_stage_parent(IO* cxt){
 	char buf[MAX_PAYLOAD_LEN];
 	int status;
 	AllHistory ah;
-	ah.s_history_len = context.proc_num;
+	ah.s_history_len = cxt->proc_num;
 	Message msg;
 
 	// Receive done msg from other process
-	for (local_id i = 1; i <= context.proc_num; i++){
-		if (context.id == i)
+	for (local_id i = 1; i <= cxt->proc_num; i++){
+		if (cxt->id == i)
 			continue;
-		receive_any(&context, &msg);
+		receive_any(cxt, &msg);
 	}
 	// Build receive all done msg
-	sprintf(buf, log_received_all_done_fmt, context.time,context.id);
+	sprintf(buf, log_received_all_done_fmt, cxt->time,cxt->id);
 	// Log receive all done msg
-	if ((status = write(context.events, buf, strlen(buf))) < 0){
+	if ((status = write(cxt->events, buf, strlen(buf))) < 0){
 		return status;
 	}
-	for (local_id i = 1; i <= context.proc_num; i++){
+	for (local_id i = 1; i <= cxt->proc_num; i++){
 		memset(&msg, 0, sizeof(Message));
-		if (context.id == i)
+		if (cxt->id == i)
 			continue;
-		receive_blk(&context,i,&msg);
+		receive_blk(cxt,i,&msg);
 		ah.s_history[i-1] = *(BalanceHistory*) msg.s_payload;
 	//	print_balance_h(ah.s_history[i-1]);
 	}
@@ -333,9 +335,9 @@ int third_stage_parent(IO context){
 int parent_work(IO context){
 	close_n_needed(context);
 
-	first_stage_parent(context);
-	second_stage_parent(context);
-	third_stage_parent(context);
+	first_stage_parent(&context);
+	second_stage_parent(&context);
+	third_stage_parent(&context);
 
 	while ( wait(NULL) > 0);
 	return 0;
