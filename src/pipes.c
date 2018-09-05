@@ -1,5 +1,9 @@
 #include "pipes.h"
 
+timestamp_t max_t(timestamp_t first, timestamp_t second){
+	return first > second ? first : second;
+}
+
 IO init_pipelines(int proc_num){
 	IO context;
 	for (local_id i = 0; i <= proc_num; i++){
@@ -103,6 +107,16 @@ int send_multicast(void * self, const Message * msg){
 	}
 	return status;
 }
+int send_child(void * self, const Message * msg){
+	IO context = *((IO*) self);
+	int status;
+	for (local_id i = 1; i <= context.proc_num; i++){
+		if ( i == context.id)
+			continue;
+		status = send(self, i, msg);
+	}
+	return status;
+}  
 
 Message* build_msg(IO* cxt ,const char* payload, MessageType type){
 	MessageHeader msgh;
@@ -156,4 +170,5 @@ timestamp_t get_lamport_time(IO* cxt){
 	cxt -> time++;
 	return cxt -> time;
 }
+
 

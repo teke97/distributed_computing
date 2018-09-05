@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR=pa3
+DIR=pa4
 
 if [ ! -d "$DIR" ]; then
 	mkdir $DIR
