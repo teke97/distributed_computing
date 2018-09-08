@@ -56,7 +56,7 @@ int receive(void * self, local_id from, Message * msg){
 	msg->s_header = msgh;
 	if (msgh.s_payload_len > 0)
 		status = read(context.pipelines[context.id][from][0], msg->s_payload, msgh.s_payload_len);
-	timestamp_t time = get_lamport_time(self);
+	timestamp_t time = get_lamport_time((IO*)self);
 	((IO*) self) -> time = time > msg -> s_header.s_local_time + 1 ? time : msg -> s_header.s_local_time + 1;
 	
 ////////if (context.id == 1)

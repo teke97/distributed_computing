@@ -127,40 +127,62 @@ int is_min(IO* cxt, timestamp_t cache[10]){
 int request_cs(const void* self){
 	IO* cxt = (IO*) self;
 	Message msg;
-	timestamp_t cache[10];
-	//memset(cache, 0, sizeof(cache));
 
-	Message* rec = build_msg(cxt, "", CS_REQUEST);
-	send_child(cxt, rec);
-
-
+	send_child(cxt, build_msg(cxt, "", CS_REQUEST));
 	insert(cxt -> q, create_node(cxt-> id, cxt -> time));
 
-
-
-
-	for (local_id i = 1; i < cxt -> proc_num; i++){
+	for (local_id i = 1; i <= cxt -> proc_num; i++){
+		memset(&msg, 0, sizeof(Message));
+		if (i == cxt -> id)
+			continue;
+		if (cxt -> id == 1)
+			printf("%hhu\n", i);
 		local_id from = receive_any(cxt, &msg);
 		switch(msg.s_header.s_type){
 			case CS_REPLY:
-					cache[from - 1] = msg.s_header.s_local_time;
+					if (cxt -> id == 1)
+						printf("reply\n");
 					break;
 			case CS_REQUEST:
+					if (cxt -> id == 1)
+						printf("request\n");				
 					insert( cxt -> q, create_node(from, msg.s_header.s_local_time));
 					i--;
-					send_child(cxt, build_msg(cxt, "", CS_REPLY));
+					send(cxt, from, build_msg(cxt, "", CS_REPLY));
 					break;
 			case CS_RELEASE:
+					if (cxt -> id == 1)
+						printf("release\n");				
 					release(cxt -> q);
 					i--;
 					break;
 		}
 		
 	}
-        cache[cxt -> id - 1] = rec -> s_header.s_local_time;
-        printf("sdsewrfewrer\n");
-        if (is_min(cxt, cache))
-        	printf("Min\n");
+	if (cxt -> q -> head -> id == cxt -> id){
+		return 0;
+	}
+	while(1){
+		memset(&msg, 0, sizeof(Message));
+		local_id from = receive_any(cxt, &msg);
+                switch(msg.s_header.s_type){
+                        case CS_REQUEST:
+                                        if (cxt -> id == 1)
+                                                printf("request\n");
+                                        insert( cxt -> q, create_node(from, msg.s_header.s_local_time));
+                                        send(cxt, from, build_msg(cxt, "", CS_REPLY));
+                                        break;
+                        case CS_RELEASE:
+                                        if (cxt -> id == 1)
+                                                printf("release\n");
+                                        release(cxt -> q);
+					if (cxt -> q -> head -> id == cxt -> id){
+						return 0;
+					}
+                                        break;
+                }
+
+	}
 	return 0;
 }
 int release_cs(const void* self){
@@ -179,7 +201,7 @@ int second_stage_child(IO* cxt){
 		sprintf(buf, log_loop_operation_fmt, cxt -> id, i, cxt -> id * 5); 
 		if (cxt -> mutex == 1)
 		request_cs(cxt);
-		//print(buf);
+		print(buf);
 		if (cxt -> mutex == 1)
 		release_cs(cxt);
 	}
@@ -272,13 +294,25 @@ int third_stage_parent(IO* cxt){
 }
 
 int parent_work(IO context){
+	int wstatus;
+
 	close_n_needed(context);
 
 	first_stage_parent(&context);
 	second_stage_parent(&context);
 	third_stage_parent(&context);
 
-	while ( wait(NULL) > 0);
+	while ( wait(&wstatus) > 0){
+		if (WIFEXITED(wstatus)) {
+                       printf("exited, status=%d\n", WEXITSTATUS(wstatus));
+                   } else if (WIFSIGNALED(wstatus)) {
+                       printf("killed by signal %d\n", WTERMSIG(wstatus));
+                   } else if (WIFSTOPPED(wstatus)) {
+                       printf("stopped by signal %d\n", WSTOPSIG(wstatus));
+                   } else if (WIFCONTINUED(wstatus)) {
+                       printf("continued\n");
+                   }
+	}
 	return 0;
 }
 
@@ -315,7 +349,7 @@ int main(int argc, char *argv[]) {
 	
 	if (context.events < 0 || context.pipes < 0)
 		return 5;
-	print_pipes(context);
+	//print_pipes(context);
 	for (local_id i = 1; i <= process_number; i++){
 		pid = fork();
 		if (pid < 0) 
