@@ -23,6 +23,7 @@ typedef struct {
 	timestamp_t time;
 	Queue* q;
 	int mutex;
+	int m;
 } IO;
 
 timestamp_t max_t(timestamp_t first, timestamp_t second);

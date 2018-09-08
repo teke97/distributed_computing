@@ -135,24 +135,24 @@ int request_cs(const void* self){
 		memset(&msg, 0, sizeof(Message));
 		if (i == cxt -> id)
 			continue;
-		if (cxt -> id == 1)
-			printf("%hhu\n", i);
+////////	if (cxt -> id == 2)
+////////		printf("%hhu\n", i);
 		local_id from = receive_any(cxt, &msg);
 		switch(msg.s_header.s_type){
 			case CS_REPLY:
-					if (cxt -> id == 1)
-						printf("reply\n");
+			////////	if (cxt -> id == 2)
+			////////		printf("reply\n");
 					break;
 			case CS_REQUEST:
-					if (cxt -> id == 1)
-						printf("request\n");				
+			////////	if (cxt -> id == 2)
+			////////		printf("request\n");				
 					insert( cxt -> q, create_node(from, msg.s_header.s_local_time));
 					i--;
 					send(cxt, from, build_msg(cxt, "", CS_REPLY));
 					break;
 			case CS_RELEASE:
-					if (cxt -> id == 1)
-						printf("release\n");				
+			////////	if (cxt -> id == 2)
+			////////		printf("release\n");				
 					release(cxt -> q);
 					i--;
 					break;
@@ -167,14 +167,14 @@ int request_cs(const void* self){
 		local_id from = receive_any(cxt, &msg);
                 switch(msg.s_header.s_type){
                         case CS_REQUEST:
-                                        if (cxt -> id == 1)
-                                                printf("request\n");
+                        //              if (cxt -> id == 2)
+                        //                      printf("request\n");
                                         insert( cxt -> q, create_node(from, msg.s_header.s_local_time));
                                         send(cxt, from, build_msg(cxt, "", CS_REPLY));
                                         break;
                         case CS_RELEASE:
-                                        if (cxt -> id == 1)
-                                                printf("release\n");
+                        //              if (cxt -> id == 2)
+                        //                      printf("release\n");
                                         release(cxt -> q);
 					if (cxt -> q -> head -> id == cxt -> id){
 						return 0;
@@ -189,15 +189,42 @@ int release_cs(const void* self){
 	IO* cxt = (IO*) self;
 	send_child(cxt, build_msg(cxt, "", CS_RELEASE));
 	release(cxt -> q);
-	if (cxt -> id == 1)
-	print_Q(cxt -> q);
+////////if (cxt -> id == 1)
+////////print_Q(cxt -> q);
 	return 0;
+}
+
+int __wait(IO* cxt){
+	Message msg;
+	if ( cxt -> q -> head == NULL && cxt -> id == cxt -> proc_num)
+		return 0;
+	while(1){
+		memset(&msg, 0, sizeof(Message));
+		local_id from = receive_any(cxt, &msg);
+                switch(msg.s_header.s_type){
+                        case CS_REQUEST:
+                        //              if (cxt -> id == 2)
+                        //                      printf("request\n");
+                                        insert( cxt -> q, create_node(from, msg.s_header.s_local_time));
+                                        send(cxt, from, build_msg(cxt, "", CS_REPLY));
+                                        break;
+                        case CS_RELEASE:
+                        //              if (cxt -> id == 2)
+                        //                      printf("release\n");
+                                        release(cxt -> q);
+                                        break;
+			case DONE:
+					return 0;
+					break;
+                }
+
+	}
 }
 
 int second_stage_child(IO* cxt){
 	char buf[MAX_PAYLOAD_LEN];
 	
-	for (int i = 1; i <=  5; i++){
+	for (int i = 1; i <=  5 * cxt -> id; i++){
 		sprintf(buf, log_loop_operation_fmt, cxt -> id, i, cxt -> id * 5); 
 		if (cxt -> mutex == 1)
 		request_cs(cxt);
@@ -205,6 +232,7 @@ int second_stage_child(IO* cxt){
 		if (cxt -> mutex == 1)
 		release_cs(cxt);
 	}
+	__wait(cxt);
 	return 0;
 }
 
@@ -220,7 +248,7 @@ int third_stage_child(IO* cxt){
 	// Send stop done other process
 	send_multicast(cxt, build_msg(cxt,buf , DONE));
 	// Receive done msg from other process
-	for (local_id i = 1; i <= context.proc_num; i++){
+	for (local_id i = 1; i < context.proc_num; i++){
 		if (context.id == i)
 			continue;
 		//receive_any(&context, &msg);
@@ -303,15 +331,15 @@ int parent_work(IO context){
 	third_stage_parent(&context);
 
 	while ( wait(&wstatus) > 0){
-		if (WIFEXITED(wstatus)) {
-                       printf("exited, status=%d\n", WEXITSTATUS(wstatus));
-                   } else if (WIFSIGNALED(wstatus)) {
-                       printf("killed by signal %d\n", WTERMSIG(wstatus));
-                   } else if (WIFSTOPPED(wstatus)) {
-                       printf("stopped by signal %d\n", WSTOPSIG(wstatus));
-                   } else if (WIFCONTINUED(wstatus)) {
-                       printf("continued\n");
-                   }
+////////	if (WIFEXITED(wstatus)) {
+////////               printf("exited, status=%d\n", WEXITSTATUS(wstatus));
+////////           } else if (WIFSIGNALED(wstatus)) {
+////////               printf("killed by signal %d\n", WTERMSIG(wstatus));
+////////           } else if (WIFSTOPPED(wstatus)) {
+////////               printf("stopped by signal %d\n", WSTOPSIG(wstatus));
+////////           } else if (WIFCONTINUED(wstatus)) {
+////////               printf("continued\n");
+////////           }
 	}
 	return 0;
 }
@@ -358,6 +386,7 @@ int main(int argc, char *argv[]) {
 			context.id = i;
 			context.time = 0;
 			context.mutex = offset;
+			context.m = 0;
 			return child_work(context);
 		}
 		pid = 0;

@@ -49,7 +49,7 @@ void insert(Queue* q, Node* n){
 	Node* cur;
 	for (cur = q ->tail; cur != NULL && cur -> time > n -> time; cur = cur -> prev);
 	if ( cur != NULL && cur -> time == n -> time)
-		for ( ; cur -> id > n -> id && cur -> time == n -> time  && cur != NULL; cur = cur -> prev);
+		for ( ; cur != NULL && cur -> id > n -> id && cur -> time == n -> time; cur = cur -> prev);
 	
 	if (cur == NULL){
 		insert_head(q, n);

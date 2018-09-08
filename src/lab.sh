@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ARGS='--mutex -p 2'
+ARGS='--mutex -p 3'
 
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/yaros/Yaros/Study/BCD/src";
 make \

@@ -126,6 +126,8 @@ Message* build_msg(IO* cxt ,const char* payload, MessageType type){
 	msgh.s_local_time = get_lamport_time(cxt);
 	Message* msg = (Message*) malloc (sizeof(Message));
 	msg -> s_header = msgh;
+////////if (cxt -> id == 2)
+////////	printf("%i\n",type);
 	if (msgh.s_payload_len != 0)
 		strcpy(msg -> s_payload, payload);
 	return msg;
