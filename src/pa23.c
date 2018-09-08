@@ -352,7 +352,7 @@ int main(int argc, char *argv[]) {
 		usage();
 		return 1;
 	}
-	if (strcmp("--mutex", argv[1]) == 0){
+	if (strcmp("--mutexl", argv[1]) == 0){
 		offset = 1;
 	}
 	else if(strcmp("-p", argv[1]) != 0){
