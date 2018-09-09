@@ -39,6 +39,8 @@ void insert_between(Queue* q, Node* a, Node* b, Node* c){
 	return;
 }
 
+
+
 void insert(Queue* q, Node* n){
 	if (q -> head == NULL || q -> tail == NULL){
                 q -> head = n;

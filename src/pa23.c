@@ -124,6 +124,15 @@ int is_min(IO* cxt, timestamp_t cache[10]){
 	return 1;
 }
 
+int more_then(IO* cxt, local_id id){
+	for (Node* n = cxt -> q -> head;; n = n -> next){
+		if ( n -> id == id)
+			return 1;
+		if ( n -> id == cxt -> id)
+			return 0;
+	}
+}
+
 int request_cs(const void* self){
 	IO* cxt = (IO*) self;
 	Message msg;
@@ -147,48 +156,49 @@ int request_cs(const void* self){
 			////////	if (cxt -> id == 2)
 			////////		printf("request\n");				
 					insert( cxt -> q, create_node(from, msg.s_header.s_local_time));
-					i--;
-					send(cxt, from, build_msg(cxt, "", CS_REPLY));
-					break;
-			case CS_RELEASE:
-			////////	if (cxt -> id == 2)
-			////////		printf("release\n");				
-					release(cxt -> q);
+					if ( cxt ->  q -> head -> id != cxt -> id){
+						send(cxt, cxt -> q -> head -> id, build_msg(cxt, "", CS_REPLY));
+						release(cxt -> q);
+					}
 					i--;
 					break;
 		}
 		
 	}
-	if (cxt -> q -> head -> id == cxt -> id){
-		return 0;
-	}
-	while(1){
-		memset(&msg, 0, sizeof(Message));
-		local_id from = receive_any(cxt, &msg);
-                switch(msg.s_header.s_type){
-                        case CS_REQUEST:
-                        //              if (cxt -> id == 2)
-                        //                      printf("request\n");
-                                        insert( cxt -> q, create_node(from, msg.s_header.s_local_time));
-                                        send(cxt, from, build_msg(cxt, "", CS_REPLY));
-                                        break;
-                        case CS_RELEASE:
-                        //              if (cxt -> id == 2)
-                        //                      printf("release\n");
-                                        release(cxt -> q);
-					if (cxt -> q -> head -> id == cxt -> id){
-						return 0;
-					}
-                                        break;
-                }
+////////if (cxt -> q -> head -> id == cxt -> id){
+////////	return 0;
+////////}
+////////while(1){
+////////	memset(&msg, 0, sizeof(Message));
+////////	local_id from = receive_any(cxt, &msg);
+////////        switch(msg.s_header.s_type){
+////////                case CS_REQUEST:
+////////                //              if (cxt -> id == 2)
+////////                //                      printf("request\n");
+////////                                insert( cxt -> q, create_node(from, msg.s_header.s_local_time));
+////////                                send(cxt, from, build_msg(cxt, "", CS_REPLY));
+////////                                break;
+////////                case CS_RELEASE:
+////////                //              if (cxt -> id == 2)
+////////                //                      printf("release\n");
+////////                                release(cxt -> q);
+////////				if (cxt -> q -> head -> id == cxt -> id){
+////////					return 0;
+////////				}
+////////                                break;
+////////        }
 
-	}
+////////}
+	release(cxt -> q);
 	return 0;
 }
 int release_cs(const void* self){
 	IO* cxt = (IO*) self;
-	send_child(cxt, build_msg(cxt, "", CS_RELEASE));
-	release(cxt -> q);
+	//send_child(cxt, build_msg(cxt, "", CS_RELEASE));
+	for (; cxt -> q -> head != NULL;){
+		send(cxt, cxt -> q -> head -> id, build_msg(cxt, "", CS_REPLY));
+		release(cxt -> q);
+	}
 ////////if (cxt -> id == 1)
 ////////print_Q(cxt -> q);
 	return 0;
@@ -205,13 +215,7 @@ int __wait(IO* cxt){
                         case CS_REQUEST:
                         //              if (cxt -> id == 2)
                         //                      printf("request\n");
-                                        insert( cxt -> q, create_node(from, msg.s_header.s_local_time));
                                         send(cxt, from, build_msg(cxt, "", CS_REPLY));
-                                        break;
-                        case CS_RELEASE:
-                        //              if (cxt -> id == 2)
-                        //                      printf("release\n");
-                                        release(cxt -> q);
                                         break;
 			case DONE:
 					return 0;
